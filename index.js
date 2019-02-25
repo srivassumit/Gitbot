@@ -24,8 +24,8 @@ router.post('/', function (req, res) {
     // console.log(req.body.pull_request.user.login);
 
 
-    console.log('Pull Request #' + req.body.number + ': ' + req.body.pull_request.title +
-        ', created by user ' + req.body.pull_request.user.login +
+    console.log('Pull Request #' + req.body.number + ': "' + req.body.pull_request.title +
+        '", ' + req.body.action + ' by user ' + req.body.pull_request.user.login +
         ' from: ' + req.body.pull_request.head.label +
         ' to: ' + req.body.pull_request.base.label);
 
