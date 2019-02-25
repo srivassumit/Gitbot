@@ -1,0 +1,24 @@
+{
+  "name": "gitbot",
+  "version": "1.0.0",
+  "description": "Git Bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo No Tests & exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/srivassumit/Gitbot.git"
+  },
+  "author": "srivassumit@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/srivassumit/Gitbot/issues"
+  },
+  "homepage": "https://github.com/srivassumit/Gitbot#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "jshint": "^2.10.1"
+  }
+}
