@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 
 var router = express.Router();
 
-var userList = ['susrivastava'];
+var userList = ['susrivastava', 'srivassumit'];
 
 var port = process.env.PORT || 5000;
 
