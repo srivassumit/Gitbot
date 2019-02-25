@@ -17,7 +17,12 @@ router.use(function(req, res, next) {
 });
 
 router.post('/', function (req, res) {
-    console.log(JSON.stringify(req.body));
+    // console.log(JSON.stringify(req.body));
+
+    console.log(req.body.action);
+    console.log(req.body.number);
+    console.log(req.body.pull_request.user.login);
+
     res.status(200);
     res.send("POST request complete");
 });
