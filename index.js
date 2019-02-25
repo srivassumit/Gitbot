@@ -27,7 +27,8 @@ router.post('/', function (req, res) {
     console.log('Pull Request #' + req.body.number + ': "' + req.body.pull_request.title +
         '", ' + req.body.action + ' by user ' + req.body.pull_request.user.login +
         ' from: ' + req.body.pull_request.head.label +
-        ' to: ' + req.body.pull_request.base.label);
+        ' to: ' + req.body.pull_request.base.label +
+        ' on Repo: ' + req.body.pull_request.base.repo.name);
 
     res.status(200);
     res.send("POST request complete");
