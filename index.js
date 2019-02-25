@@ -14,7 +14,9 @@ var port = process.env.PORT || 5000;
 
 var makePostReq = function (postData) {
     var postOptions = {
-        url: 'https://hooks.slack.com/services/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',
+        host: 'hooks.slack.com',
+        path: '/services/TGFUG9XDX/BGGRUDC7P/YgM1rD8xWxQOPNTES3xwrkIT',
+        port: 443,
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -29,6 +31,7 @@ var makePostReq = function (postData) {
         });
     });
     req.on('error', (e) => {
+        console.log('Error while sending POST to Slack');
         console.error(e);
     });
     req.write(postData);
@@ -43,15 +46,21 @@ router.use(function (req, res, next) {
 router.post('/', function (req, res) {
     // console.log(JSON.stringify(req.body));
 
-    var postData = JSON.stringify({
-        'msg': 'Pull Request #' + req.body.number + ': "' + req.body.pull_request.title +
-            '", ' + req.body.action + ' by user ' + req.body.pull_request.user.login +
-            ' from: ' + req.body.pull_request.head.label +
-            ' to: ' + req.body.pull_request.base.label +
-            ' on Repo: ' + req.body.pull_request.base.repo.name
-    });
+    var postData = {
+        "text": 'New Pull Request Notification!',
+        "attachments": [{
+            "fallback": "Required plain-text summary of the attachment.",
+            "color": "#36a64f",
+            "title": 'Pull Request #' + req.body.number + ': ' + req.body.pull_request.title,
+            "title_link": req.body.pull_request.html_url,
+            "text": 'Pull Request ' + req.body.action + ' by *<' + req.body.pull_request.user.html_url + '|' + req.body.pull_request.user.login +
+                '>* on Repo: *<' + req.body.pull_request.base.repo.html_url + '|' + req.body.pull_request.base.repo.name +
+                '>* from fork/branch: *<' + req.body.pull_request.head.repo.html_url + '|' + req.body.pull_request.head.label +
+                '>* to fork/branch: *<' + req.body.pull_request.base.repo.html_url + '|' + req.body.pull_request.base.label + '>*'
+        }]
+    };
     console.log(postData);
-    makePostReq(postData);
+    makePostReq(JSON.stringify(postData));
     res.status(200);
     res.send("POST request complete");
 });
