@@ -10,6 +10,8 @@ app.use(bodyParser.json());
 
 var router = express.Router();
 
+var userList = ['susrivastava'];
+
 var port = process.env.PORT || 5000;
 
 var makePostReq = function (postData) {
@@ -46,21 +48,25 @@ router.use(function (req, res, next) {
 router.post('/', function (req, res) {
     // console.log(JSON.stringify(req.body));
 
-    var postData = {
-        "text": 'New Pull Request Notification!',
-        "attachments": [{
-            "fallback": "Required plain-text summary of the attachment.",
-            "color": "#36a64f",
-            "title": 'Pull Request #' + req.body.number + ': ' + req.body.pull_request.title,
-            "title_link": req.body.pull_request.html_url,
-            "text": 'Pull Request ' + req.body.action + ' by *<' + req.body.pull_request.user.html_url + '|' + req.body.pull_request.user.login +
-                '>* on Repo: *<' + req.body.pull_request.base.repo.html_url + '|' + req.body.pull_request.base.repo.name +
-                '>* from fork/branch: *<' + req.body.pull_request.head.repo.html_url + '|' + req.body.pull_request.head.label +
-                '>* to fork/branch: *<' + req.body.pull_request.base.repo.html_url + '|' + req.body.pull_request.base.label + '>*'
-        }]
-    };
-    console.log(postData);
-    makePostReq(JSON.stringify(postData));
+    if (userList.includes(req.body.pull_request.user.login)) {
+        var postData = {
+            "text": 'New Pull Request Notification!',
+            "attachments": [{
+                "fallback": "Required plain-text summary of the attachment.",
+                "color": "#36a64f",
+                "title": 'Pull Request #' + req.body.number + ': ' + req.body.pull_request.title,
+                "title_link": req.body.pull_request.html_url,
+                "text": 'Pull Request ' + req.body.action + ' by *<' + req.body.pull_request.user.html_url + '|' + req.body.pull_request.user.login +
+                    '>* on Repo: *<' + req.body.pull_request.base.repo.html_url + '|' + req.body.pull_request.base.repo.name +
+                    '>* from fork/branch: *<' + req.body.pull_request.head.repo.html_url + '|' + req.body.pull_request.head.label +
+                    '>* to fork/branch: *<' + req.body.pull_request.base.repo.html_url + '|' + req.body.pull_request.base.label + '>*'
+            }]
+        };
+        console.log(postData);
+        makePostReq(JSON.stringify(postData));
+    } else {
+        console.log('Pull request was created by someone in Git who is not on watch list. Do nothing.');
+    }
     res.status(200);
     res.send("POST request complete");
 });
