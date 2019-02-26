@@ -14,11 +14,6 @@ var userList = ['susrivastava', 'srivassumit'];
 
 var port = process.env.PORT || 5000;
 
-
-// var slackWebhookPath = '/services/TGFUG9XDX/BGGRUDC7P/YgM1rD8xWxQOPNTES3xwrkIT';
-console.log(JSON.stringify(process.env.SLACK_WEBHOOK).split('https://hooks.slack.com/services/')[1]);
-
-
 var makePostReq = function (postData) {
     var postOptions = {
         host: 'hooks.slack.com',
@@ -78,8 +73,6 @@ router.post('/', function (req, res) {
 
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
 router.get('/', function (req, res) {
-    console.log('env var is: ' + process.env.SLACK_WEBHOOK);
-    console.log('path is: ' + JSON.stringify(process.env.SLACK_WEBHOOK).split('https://hooks.slack.com')[1]);
     res.json({
         message: 'hooray! welcome to our api!'
     });
