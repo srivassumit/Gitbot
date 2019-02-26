@@ -16,12 +16,12 @@ var port = process.env.PORT || 5000;
 
 
 // var slackWebhookPath = '/services/TGFUG9XDX/BGGRUDC7P/YgM1rD8xWxQOPNTES3xwrkIT';
-var slackWebhookPath = process.env.SLACK_WEBHOOK.split('https://hooks.slack.com)')[1];
+console.log(JSON.stringify(process.env.SLACK_WEBHOOK).split('https://hooks.slack.com)')[1]);
 
 
 var makePostReq = function (postData) {
     console.log('env var is: ' + process.env.SLACK_WEBHOOK);
-    console.log('path is: ' + process.env.SLACK_WEBHOOK.split('https://hooks.slack.com)')[1]);
+    console.log('path is: ' + JSON.stringify(process.env.SLACK_WEBHOOK).split('https://hooks.slack.com)')[1]);
     var postOptions = {
         host: 'hooks.slack.com',
         path: process.env.SLACK_WEBHOOK.split('https://hooks.slack.com)')[1],
