@@ -12,11 +12,8 @@ var router = express.Router();
 
 var userList = [];
 
-console.log(process.env.USER_LIST);
-console.log(process.env.ACTION_LIST);
-
 // user can provide a subscription user list by providing a comma separated list of Github user IDs as a environment variable `USERLIST`
-if (process.env.USER_LIST) {
+if (!!process.env.USER_LIST) {
     console.log('mapping user list');
     userList = process.env.USER_LIST.split(',');
 }
@@ -24,7 +21,21 @@ if (process.env.USER_LIST) {
 // these are all the possible events for Git pull requests.
 var subscribedEvents = ['opened', 'closed', 'reopened', 'edited', 'assigned', 'unassigned', 'review_requested', 'review_request_removed', 'labeled', 'unlabeled'];
 
-if (process.env.ACTION_LIST) {
+var colors = {
+    'opened': '#36a64f',
+    'closed': '#FF4500',
+    'reopened': '#FFA500',
+    'edited': '#00FF7F',
+    'assigned': '#4169E1',
+    'unassigned': '#B0C4DE',
+    'review_requested': '#8B008B',
+    'review_request_removed': '#D8BFD8',
+    'labeled': '#00BFFF',
+    'unlabeled': '#00BFFF',
+    'merged': '#36a64f'
+};
+
+if (!!process.env.ACTION_LIST) {
     console.log('mapping action list');
     subscribedEvents = process.env.ACTION_LIST.split(',');
 }
@@ -59,12 +70,11 @@ var makePostReq = function (postData) {
 
 var doRequest = function (reqBody) {
     var mappedAction = reqBody.action === 'closed' ? reqBody.pull_request.merged === true ? 'merged' : reqBody.action : reqBody.action;
-    console.log(mappedAction);
     var postData = {
         "text": 'New Pull Request Notification!',
         "attachments": [{
             "fallback": "Required plain-text summary of the attachment.",
-            "color": "#36a64f",
+            "color": colors[mappedAction],
             "title": 'Pull Request #' + reqBody.number + ': ' + reqBody.pull_request.title,
             "title_link": reqBody.pull_request.html_url,
             "text": 'Pull Request ' + mappedAction + ' by *<' + reqBody.pull_request.user.html_url + '|' + reqBody.pull_request.user.login +
