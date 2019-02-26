@@ -12,6 +12,9 @@ var router = express.Router();
 
 var userList = [];
 
+console.log(process.env.USER_LIST);
+console.log(process.env.ACTION_LIST);
+
 // user can provide a subscription user list by providing a comma separated list of Github user IDs as a environment variable `USERLIST`
 if (process.env.USER_LIST) {
     console.log('mapping user list');
