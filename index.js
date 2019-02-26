@@ -14,8 +14,9 @@ var userList = ['susrivastava', 'srivassumit'];
 
 var port = process.env.PORT || 5000;
 
-//'/services/TGFUG9XDX/BGGRUDC7P/YgM1rD8xWxQOPNTES3xwrkIT',
-var slackWebhookPath = process.env.SLACK_WEBHOOK.split('https://hooks.slack.com)')[1];
+
+var slackWebhookPath = '/services/TGFUG9XDX/BGGRUDC7P/YgM1rD8xWxQOPNTES3xwrkIT';
+// var slackWebhookPath = process.env.SLACK_WEBHOOK.split('https://hooks.slack.com)')[1];
 
 
 var makePostReq = function (postData) {
@@ -83,7 +84,7 @@ router.get('/', function (req, res) {
     });
 });
 
-// app.use('/api', router);
+app.use('/', router);
 
 app.listen(port, function () {
     console.log('server listening on port ' + port);
