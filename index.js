@@ -93,7 +93,7 @@ router.use(function (req, res, next) {
 });
 
 router.post('/', function (req, res) {
-    // console.log(JSON.stringify(req.body));
+    console.log(JSON.stringify(req.body));
     if (userList.length === 0) {
         doRequest(req.body);
     } else if (userList.length > 0 && userList.includes(req.body.pull_request.user.login)) {
