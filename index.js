@@ -14,14 +14,16 @@ var userList = [];
 
 // user can provide a subscription user list by providing a comma separated list of Github user IDs as a environment variable `USERLIST`
 if (process.env.USER_LIST) {
+    console.log('mapping user list');
     userList = process.env.USER_LIST.split(',');
 }
 
 // these are all the possible events for Git pull requests.
 var subscribedEvents = ['opened', 'closed', 'reopened', 'edited', 'assigned', 'unassigned', 'review_requested', 'review_request_removed', 'labeled', 'unlabeled'];
 
-if (process.env.EVENT_LIST) {
-    subscribedEvents = process.env.EVENT_LIST.split(',');
+if (process.env.ACTION_LIST) {
+    console.log('mapping action list');
+    subscribedEvents = process.env.ACTION_LIST.split(',');
 }
 
 var port = process.env.PORT || 5000;
@@ -54,6 +56,7 @@ var makePostReq = function (postData) {
 
 var doRequest = function (reqBody) {
     var mappedAction = reqBody.action === 'closed' ? reqBody.pull_request.merged === true ? 'merged' : reqBody.action : reqBody.action;
+    console.log(mappedAction);
     var postData = {
         "text": 'New Pull Request Notification!',
         "attachments": [{
@@ -76,13 +79,11 @@ router.use(function (req, res, next) {
     next(); // make sure we go to the next routes and don't stop here
 });
 
-
-
 router.post('/', function (req, res) {
     // console.log(JSON.stringify(req.body));
-    if (!userList || userList.length === 0) {
+    if (userList.length === 0) {
         doRequest(req.body);
-    } else if (!!userList && userList.length > 0 && userList.includes(req.body.pull_request.user.login)) {
+    } else if (userList.length > 0 && userList.includes(req.body.pull_request.user.login)) {
         doRequest(req.body);
     } else {
         console.log('Pull request was created by someone in Git who is not on watch list. Do nothing.');
