@@ -83,7 +83,7 @@ router.get('/', function (req, res) {
     });
 });
 
-app.use('/api', router);
+// app.use('/api', router);
 
 app.listen(port, function () {
     console.log('server listening on port ' + port);
