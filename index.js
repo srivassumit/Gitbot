@@ -20,6 +20,7 @@ var slackWebhookPath = process.env.SLACK_WEBHOOK.split('https://hooks.slack.com)
 
 
 var makePostReq = function (postData) {
+    console.log('env var is: ' + process.env.SLACK_WEBHOOK);
     console.log('path is: ' + slackWebhookPath);
     var postOptions = {
         host: 'hooks.slack.com',
