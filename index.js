@@ -10,7 +10,19 @@ app.use(bodyParser.json());
 
 var router = express.Router();
 
-var userList = ['susrivastava', 'srivassumit'];
+var userList = [];
+
+// user can provide a subscription user list by providing a comma separated list of Github user IDs as a environment variable `USERLIST`
+if (process.env.USER_LIST) {
+    userList = process.env.USER_LIST.split(',');
+}
+
+// these are all the possible events for Git pull requests.
+var subscribedEvents = ['opened', 'closed', 'reopened', 'edited', 'assigned', 'unassigned', 'review_requested', 'review_request_removed', 'labeled', 'unlabeled', 'synchronized'];
+
+if (process.env.EVENT_LIST) {
+    subscribedEvents = process.env.EVENT_LIST.split(',');
+}
 
 var port = process.env.PORT || 5000;
 
@@ -40,30 +52,37 @@ var makePostReq = function (postData) {
     req.end();
 }
 
+var doRequest = function (reqBody) {
+    var postData = {
+        "text": 'New Pull Request Notification!',
+        "attachments": [{
+            "fallback": "Required plain-text summary of the attachment.",
+            "color": "#36a64f",
+            "title": 'Pull Request #' + reqBody.number + ': ' + reqBody.pull_request.title,
+            "title_link": reqBody.pull_request.html_url,
+            "text": 'Pull Request ' + reqBody.action + ' by *<' + reqBody.pull_request.user.html_url + '|' + reqBody.pull_request.user.login +
+                '>* on Repo: *<' + reqBody.pull_request.base.repo.html_url + '|' + reqBody.pull_request.base.repo.name +
+                '>* from fork/branch: *<' + reqBody.pull_request.head.repo.html_url + '|' + reqBody.pull_request.head.label +
+                '>* to fork/branch: *<' + reqBody.pull_request.base.repo.html_url + '|' + reqBody.pull_request.base.label + '>*'
+        }]
+    };
+    console.log(postData);
+    makePostReq(JSON.stringify(postData));
+}
+
 router.use(function (req, res, next) {
     console.log('Request is recieved.');
     next(); // make sure we go to the next routes and don't stop here
 });
 
+
+
 router.post('/', function (req, res) {
     // console.log(JSON.stringify(req.body));
-
-    if (userList.includes(req.body.pull_request.user.login)) {
-        var postData = {
-            "text": 'New Pull Request Notification!',
-            "attachments": [{
-                "fallback": "Required plain-text summary of the attachment.",
-                "color": "#36a64f",
-                "title": 'Pull Request #' + req.body.number + ': ' + req.body.pull_request.title,
-                "title_link": req.body.pull_request.html_url,
-                "text": 'Pull Request ' + req.body.action + ' by *<' + req.body.pull_request.user.html_url + '|' + req.body.pull_request.user.login +
-                    '>* on Repo: *<' + req.body.pull_request.base.repo.html_url + '|' + req.body.pull_request.base.repo.name +
-                    '>* from fork/branch: *<' + req.body.pull_request.head.repo.html_url + '|' + req.body.pull_request.head.label +
-                    '>* to fork/branch: *<' + req.body.pull_request.base.repo.html_url + '|' + req.body.pull_request.base.label + '>*'
-            }]
-        };
-        console.log(postData);
-        makePostReq(JSON.stringify(postData));
+    if (!userList || userList.length === 0) {
+        doRequest(req.body);
+    } else if (!!userList && userList.length > 0 && userList.includes(req.body.pull_request.user.login)) {
+        doRequest(req.body);
     } else {
         console.log('Pull request was created by someone in Git who is not on watch list. Do nothing.');
     }
@@ -71,7 +90,6 @@ router.post('/', function (req, res) {
     res.send("POST request complete");
 });
 
-// test route to make sure everything is working (accessed at GET http://localhost:8080/api)
 router.get('/', function (req, res) {
     res.json({
         message: 'hooray! welcome to our api!'
