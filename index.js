@@ -70,6 +70,10 @@ var makePostReq = function (postData) {
 
 var doRequest = function (reqBody) {
     var mappedAction = reqBody.action === 'closed' ? reqBody.pull_request.merged === true ? 'merged' : reqBody.action : reqBody.action;
+    var actionBy = '*<' + reqBody.pull_request.user.html_url + '|' + reqBody.pull_request.user.login + '>*';
+    if (mappedAction === 'merged') {
+        actionBy = '*<' + reqBody.pull_request.merged_by.html_url + '|' + reqBody.pull_request.merged_by.login + '>*';
+    }
     var postData = {
         "text": 'New Pull Request Notification!',
         "attachments": [{
@@ -77,8 +81,7 @@ var doRequest = function (reqBody) {
             "color": colors[mappedAction],
             "title": 'Pull Request #' + reqBody.number + ': ' + reqBody.pull_request.title,
             "title_link": reqBody.pull_request.html_url,
-            "text": 'Pull Request ' + mappedAction + ' by *<' + reqBody.pull_request.user.html_url + '|' + reqBody.pull_request.user.login +
-                '>* on Repo: *<' + reqBody.pull_request.base.repo.html_url + '|' + reqBody.pull_request.base.repo.name +
+            "text": 'Pull Request ' + mappedAction + ' by ' + actionBy + ' on Repo: *<' + reqBody.pull_request.base.repo.html_url + '|' + reqBody.pull_request.base.repo.name +
                 '>* from fork/branch: *<' + reqBody.pull_request.head.repo.html_url + '|' + reqBody.pull_request.head.label +
                 '>* to fork/branch: *<' + reqBody.pull_request.base.repo.html_url + '|' + reqBody.pull_request.base.label + '>*'
         }]
@@ -93,7 +96,7 @@ router.use(function (req, res, next) {
 });
 
 router.post('/', function (req, res) {
-    console.log(JSON.stringify(req.body));
+    // console.log(JSON.stringify(req.body));
     if (userList.length === 0) {
         doRequest(req.body);
     } else if (userList.length > 0 && userList.includes(req.body.pull_request.user.login)) {
