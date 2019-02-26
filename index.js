@@ -14,10 +14,13 @@ var userList = ['susrivastava', 'srivassumit'];
 
 var port = process.env.PORT || 5000;
 
+//'/services/TGFUG9XDX/BGGRUDC7P/YgM1rD8xWxQOPNTES3xwrkIT',
+var slackWebhookPath = process.env.SLACK_WEBHOOK.split('https://hooks.slack.com)')[1];
+
 var makePostReq = function (postData) {
     var postOptions = {
         host: 'hooks.slack.com',
-        path: '/services/TGFUG9XDX/BGGRUDC7P/YgM1rD8xWxQOPNTES3xwrkIT',
+        path: slackWebhookPath,
         port: 443,
         method: 'POST',
         headers: {
@@ -27,10 +30,10 @@ var makePostReq = function (postData) {
     }
     var req = https.request(postOptions, (res) => {
         console.log('statusCode from Slack:', res.statusCode);
-        console.log('headers from Slack:', res.headers);
-        res.on('data', (d) => {
-            process.stdout.write(d);
-        });
+        // console.log('headers from Slack:', res.headers);
+        // res.on('data', (d) => {
+        //     process.stdout.write(d);
+        // });
     });
     req.on('error', (e) => {
         console.log('Error while sending POST to Slack');
