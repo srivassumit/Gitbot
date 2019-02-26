@@ -35,7 +35,7 @@ You must already have the following resources/accounts created and tools install
 3. add the url of your Heroku app which we just deployed in the `Payload URL` box. leave the `Content type` and `Secret` as it is.
 4. Choose the `Let me select individual events` option in the `Which events would you like to trigger this webhook?` section and select only the `Pull requests` option.
 5. Leave the `Active` checkbox selected and click on `Create Webhook`.
-6. Done! Now the App deployed on Heroku will be able to receive a call from GitHub whenever a new Pull Request is `[opened, closed, reopened, edited, assigned, unassigned, review requested, review request removed, labeled, unlabeled, synchronized]` on any repository on your organization on GitHub.
+6. Done! Now the App deployed on Heroku will be able to receive a call from GitHub whenever a new Pull Request is `[assigned, unassigned, review_requested, review_request_removed, labeled, unlabeled, opened, edited, closed, reopened]` on any repository on your organization on GitHub.
 
 ### Add Slackbot and Incoming Webhook in slack
 1. Create a [Slack App](https://api.slack.com/apps/new) in your Slack workspace. Choose a app name and workspace for your App.
@@ -52,5 +52,5 @@ You must already have the following resources/accounts created and tools install
 
 - Users can provide a list of users for whom the notification must be triggered. 
   - The way to add the user list is to set up a config variable `USER_LIST` in the Heroku Config Vars section.
-- [`In Future`] Users can provide a list of actions to subscribe to. If this is not provided, then all actions are subscribed: `[opened, closed, reopened, edited, assigned, unassigned, review requested, review request removed, labeled, unlabeled, synchronized]`
+- [`In Future`] Users can provide a list of actions to subscribe to. If this is not provided, then all actions are subscribed: `[assigned, unassigned, review_requested, review_request_removed, labeled, unlabeled, opened, edited, closed, reopened]`
 > *Note*:  Subscription list feature is not supported yet.

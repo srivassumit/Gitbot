@@ -18,7 +18,7 @@ if (process.env.USER_LIST) {
 }
 
 // these are all the possible events for Git pull requests.
-var subscribedEvents = ['opened', 'closed', 'reopened', 'edited', 'assigned', 'unassigned', 'review_requested', 'review_request_removed', 'labeled', 'unlabeled', 'synchronized'];
+var subscribedEvents = ['opened', 'closed', 'reopened', 'edited', 'assigned', 'unassigned', 'review_requested', 'review_request_removed', 'labeled', 'unlabeled'];
 
 if (process.env.EVENT_LIST) {
     subscribedEvents = process.env.EVENT_LIST.split(',');
@@ -53,6 +53,7 @@ var makePostReq = function (postData) {
 }
 
 var doRequest = function (reqBody) {
+    var mappedAction = reqBody.action === 'closed' ? reqBody.pull_request.merged === true ? 'merged' : reqBody.action : reqBody.action;
     var postData = {
         "text": 'New Pull Request Notification!',
         "attachments": [{
@@ -60,7 +61,7 @@ var doRequest = function (reqBody) {
             "color": "#36a64f",
             "title": 'Pull Request #' + reqBody.number + ': ' + reqBody.pull_request.title,
             "title_link": reqBody.pull_request.html_url,
-            "text": 'Pull Request ' + reqBody.action + ' by *<' + reqBody.pull_request.user.html_url + '|' + reqBody.pull_request.user.login +
+            "text": 'Pull Request ' + mappedAction + ' by *<' + reqBody.pull_request.user.html_url + '|' + reqBody.pull_request.user.login +
                 '>* on Repo: *<' + reqBody.pull_request.base.repo.html_url + '|' + reqBody.pull_request.base.repo.name +
                 '>* from fork/branch: *<' + reqBody.pull_request.head.repo.html_url + '|' + reqBody.pull_request.head.label +
                 '>* to fork/branch: *<' + reqBody.pull_request.base.repo.html_url + '|' + reqBody.pull_request.base.label + '>*'
